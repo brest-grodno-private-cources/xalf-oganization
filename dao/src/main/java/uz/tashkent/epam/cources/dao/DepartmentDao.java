@@ -4,7 +4,7 @@ import uz.tashkent.epam.cources.model.Department;
 
 import java.util.List;
 
-public interface DepartmentDaoJdbc {
+public interface DepartmentDao {
 
     List<Department> getAllDepartments();
 
