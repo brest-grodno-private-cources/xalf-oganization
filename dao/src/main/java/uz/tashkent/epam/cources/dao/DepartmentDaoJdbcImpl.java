@@ -24,6 +24,11 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
         return departments;
     }
 
+    @Override
+    public Department addDepartment(String departmentName, String departmentDescription) {
+        return null;
+    }
+
     private class DepartmentRowMapper implements RowMapper<Department> {
 
         @Override

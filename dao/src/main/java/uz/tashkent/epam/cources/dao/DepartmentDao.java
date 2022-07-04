@@ -8,4 +8,6 @@ public interface DepartmentDao {
 
     List<Department> getAllDepartments();
 
+    Department addDepartment(String departmentName, String departmentDescription);
+
 }

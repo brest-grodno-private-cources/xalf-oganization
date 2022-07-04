@@ -1,0 +1,2 @@
+INSERT INTO DEPARTMENT(department_id, department_name, department_description) VALUES(1, 'IT', 'IT SUPPORT');
+INSERT INTO DEPARTMENT(department_id, department_name, department_description) VALUES(2, 'SECURITY', 'SECURITY');
