@@ -11,7 +11,7 @@ import uz.tashkent.epam.cources.model.Department;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:test-db.xml", "classpath:test-dao.xml"})
+@ContextConfiguration(locations = {"classpath:test-spring-config.xml", "classpath:test-dao.xml"})
 class DepartmentDaoJdbcImplTest {
 
     @Autowired
