@@ -1,9 +1,7 @@
 package uz.tashkent.epam.cources.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import uz.tashkent.epam.cources.model.Department;
@@ -17,6 +15,9 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
 
     private static final String SQL_GET_ALL_DEPARTMENTS =
             "select department_id, department_name from department order by department_name";
+
+    private static final String SQL_GET_DEPARTMENT_BY_NAME =
+            "select count(department_id) as cnt from department where lower(department_name) = ?";
 
     private static final String SQL_ADD_DEPARTMENT =
             "INSERT INTO DEPARTMENT(department_name, department_description) VALUES(?, ?)";
@@ -42,6 +43,10 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
     @Override
     public Department addDepartment(String departmentName, String departmentDescription) {
 
+        if (isDepartmentNameExists(departmentName)) {
+            throw new IllegalArgumentException("Department with name '" + departmentName + "' already exists in DB.");
+        }
+
         var preparedStatementCreatorFactory =
                 new PreparedStatementCreatorFactory(SQL_ADD_DEPARTMENT, Types.VARCHAR, Types.VARCHAR) {
             {
@@ -56,6 +61,24 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(preparedStatementCreator, keyHolder);
         return new Department(keyHolder.getKey().intValue(), departmentName, departmentDescription);
+    }
+
+    private boolean isDepartmentNameExists(String departmentName) {
+
+        var preparedStatementCreatorFactory =
+                new PreparedStatementCreatorFactory(SQL_GET_DEPARTMENT_BY_NAME, Types.VARCHAR);
+        PreparedStatementCreator preparedStatementCreator =
+                preparedStatementCreatorFactory
+                        .newPreparedStatementCreator(new Object[]{departmentName.trim().toLowerCase()});
+
+        Integer result = jdbcTemplate.query(preparedStatementCreator, new ResultSetExtractor<Integer>() {
+            @Override
+            public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
+                return rs.getInt("cnt");
+            }
+        });
+
+        return result.intValue() > 0;
     }
 
     private class DepartmentRowMapper implements RowMapper<Department> {

@@ -10,9 +10,14 @@ import uz.tashkent.epam.cources.model.Department;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:test-spring-config.xml", "classpath:test-dao.xml"})
 class DepartmentDaoJdbcImplTest {
+
+    public static final String NEW_DEPARTMENT = "NEWDepartment";
 
     @Autowired
     DepartmentDao departmentDao;
@@ -21,21 +26,34 @@ class DepartmentDaoJdbcImplTest {
     void getAllDepartmentsTest() {
         List<Department> departments = departmentDao.getAllDepartments();
         Assertions.assertNotNull(departments);
-        Assertions.assertTrue(departments.size() > 0);
+        assertTrue(departments.size() > 0);
     }
 
     @Test
     void addDepartmentTest() {
         List<Department> departmentsBefore = departmentDao.getAllDepartments();
         Assertions.assertNotNull(departmentsBefore);
-        Assertions.assertTrue(departmentsBefore.size() > 0);
+        assertTrue(departmentsBefore.size() > 0);
         Integer departmentsSizeBefore = departmentsBefore.size();
         Department newDepartment =
-                departmentDao.addDepartment("NEWDepartment", "NEWDepartment Descr");
-        Assertions.assertTrue(newDepartment.getDepartmentName().equals("NEWDepartment"));
-        Assertions.assertTrue(newDepartment.getDepartmentDescription().equals("NEWDepartment Descr"));
+                departmentDao.addDepartment(NEW_DEPARTMENT, "NEWDepartment Descr");
+        assertTrue(newDepartment.getDepartmentName().equals(NEW_DEPARTMENT));
+        assertTrue(newDepartment.getDepartmentDescription().equals("NEWDepartment Descr"));
         List<Department> departmentsAfter = departmentDao.getAllDepartments();
         Assertions.assertNotNull(departmentsAfter);
-        Assertions.assertTrue(departmentsSizeBefore < departmentsAfter.size());
+        assertTrue(departmentsSizeBefore < departmentsAfter.size());
     }
+
+    @Test
+    void addNotUniqueDepartmentTest() {
+        departmentDao.addDepartment(NEW_DEPARTMENT, "NEWDepartment Descr");
+        Exception exception = assertThrows(IllegalArgumentException.class ,() -> {
+            departmentDao.addDepartment(NEW_DEPARTMENT, "");
+        });
+//        For example:
+//        String expectedMessage = "For input string";
+//        String actualMessage = exception.getMessage();
+//        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
 }
