@@ -71,14 +71,14 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
                 preparedStatementCreatorFactory
                         .newPreparedStatementCreator(new Object[]{departmentName.trim().toLowerCase()});
 
-        Integer result = jdbcTemplate.query(preparedStatementCreator, new ResultSetExtractor<Integer>() {
-            @Override
-            public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
+        Integer result = jdbcTemplate.query(preparedStatementCreator, rs -> {
+            if (rs.next()) {
                 return rs.getInt("cnt");
             }
+            return 0;
         });
 
-        return result.intValue() > 0;
+        return result > 0;
     }
 
     private class DepartmentRowMapper implements RowMapper<Department> {

@@ -50,10 +50,9 @@ class DepartmentDaoJdbcImplTest {
         Exception exception = assertThrows(IllegalArgumentException.class ,() -> {
             departmentDao.addDepartment(NEW_DEPARTMENT, "");
         });
-//        For example:
-//        String expectedMessage = "For input string";
-//        String actualMessage = exception.getMessage();
-//        assertTrue(actualMessage.contains(expectedMessage));
+        String expectedMessage = "Department with name '" + NEW_DEPARTMENT + "' already exists in DB.";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
 }
