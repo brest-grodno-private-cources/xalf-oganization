@@ -1,7 +1,9 @@
 package uz.tashkent.epam.cources.dao;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import uz.tashkent.epam.cources.model.Department;
@@ -26,6 +28,8 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
     public static final String DEPARTMENT_NAME = "department_name";
     public static final String DEPARTMENT_DESCRIPTION = "department_description";
 
+    //CRUD C-create R-read U-update D-delete
+
     JdbcTemplate jdbcTemplate;
 
     public DepartmentDaoJdbcImpl(JdbcTemplate jdbcTemplate) {
@@ -37,8 +41,6 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
         List<Department> departments = jdbcTemplate.query(SQL_GET_ALL_DEPARTMENTS, new DepartmentRowMapper());
         return departments;
     }
-
-    //CRUD C-create R-read U-update D-delete
 
     @Override
     public Department addDepartment(String departmentName, String departmentDescription) {
@@ -71,14 +73,14 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
                 preparedStatementCreatorFactory
                         .newPreparedStatementCreator(new Object[]{departmentName.trim().toLowerCase()});
 
-        Integer result = jdbcTemplate.query(preparedStatementCreator, rs -> {
+        Integer foundRecordsNumber = jdbcTemplate.query(preparedStatementCreator, rs -> {
             if (rs.next()) {
                 return rs.getInt("cnt");
             }
             return 0;
         });
 
-        return result > 0;
+        return foundRecordsNumber > 0;
     }
 
     private class DepartmentRowMapper implements RowMapper<Department> {
@@ -87,7 +89,7 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
         public Department mapRow(ResultSet rs, int rowNum) throws SQLException {
             Integer departmentId = rs.getInt(DEPARTMENT_ID);
             String departmentName = rs.getString(DEPARTMENT_NAME);
-            String departmentDescription = DEPARTMENT_DESCRIPTION;
+            String departmentDescription = rs.getString(DEPARTMENT_DESCRIPTION);
             return new Department(departmentId, departmentName, departmentDescription);
         }
     }
