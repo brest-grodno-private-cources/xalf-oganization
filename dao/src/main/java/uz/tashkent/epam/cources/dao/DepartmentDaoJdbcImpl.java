@@ -16,13 +16,20 @@ import java.util.List;
 public class DepartmentDaoJdbcImpl implements DepartmentDao {
 
     private static final String SQL_GET_ALL_DEPARTMENTS =
-            "select department_id, department_name from department order by department_name";
+            "select department_id, department_name, department_description from department order by department_name";
 
     private static final String SQL_GET_DEPARTMENT_BY_NAME =
             "select count(department_id) as cnt from department where lower(department_name) = ?";
 
     private static final String SQL_ADD_DEPARTMENT =
             "INSERT INTO DEPARTMENT(department_name, department_description) VALUES(?, ?)";
+
+    private static final String SQL_UPDATE_DEPARTMENT =
+            "update department set department_name = ?, department_description = ? where " +
+                    "department_id = ?";
+
+    private static final String SQL_DELETE_DEPARTMENT =
+            "delete from department where department_id = ?";
 
     public static final String DEPARTMENT_ID = "department_id";
     public static final String DEPARTMENT_NAME = "department_name";
@@ -81,6 +88,37 @@ public class DepartmentDaoJdbcImpl implements DepartmentDao {
         });
 
         return foundRecordsNumber > 0;
+    }
+
+    @Override
+    public int updateDepartment(Department department) {
+
+        if (isDepartmentNameExists(department.getDepartmentName())) {
+            throw new IllegalArgumentException("Department with name '" + department.getDepartmentName() + "' already exists in DB.");
+        }
+
+        var preparedStatementCreatorFactory =
+                new PreparedStatementCreatorFactory(SQL_UPDATE_DEPARTMENT,
+                        Types.VARCHAR, Types.VARCHAR, Types.INTEGER);
+
+        PreparedStatementCreator preparedStatementCreator =
+                preparedStatementCreatorFactory
+                        .newPreparedStatementCreator(new Object[]{ department.getDepartmentName(),
+                                department.getDepartmentDescription(), department.getDepartmentId()});
+        return jdbcTemplate.update(preparedStatementCreator);
+    }
+
+    @Override
+    public int deleteDepartment(int departmentId) {
+
+        var preparedStatementCreatorFactory =
+                new PreparedStatementCreatorFactory(SQL_DELETE_DEPARTMENT, Types.INTEGER);
+
+        PreparedStatementCreator preparedStatementCreator =
+                preparedStatementCreatorFactory
+                        .newPreparedStatementCreator(new Object[]{departmentId});
+
+        return jdbcTemplate.update(preparedStatementCreator);
     }
 
     private class DepartmentRowMapper implements RowMapper<Department> {

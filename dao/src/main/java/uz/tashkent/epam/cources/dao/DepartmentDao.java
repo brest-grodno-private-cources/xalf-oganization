@@ -10,4 +10,8 @@ public interface DepartmentDao {
 
     Department addDepartment(String departmentName, String departmentDescription);
 
+    int updateDepartment(Department department);
+
+    int deleteDepartment(int departmentId);
+
 }
