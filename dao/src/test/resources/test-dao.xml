@@ -8,4 +8,8 @@
         <constructor-arg ref="jdbcTemplate"/>
     </bean>
 
+    <bean name="employeeDao" class="uz.tashkent.epam.cources.dao.EmployeeDaoJdbcImpl">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+
 </beans>

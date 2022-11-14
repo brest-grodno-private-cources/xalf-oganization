@@ -16,6 +16,14 @@ public class Employee {
 
     private Integer departmentId;
 
+    public Employee(String firstName, String lastName, String email, Integer departmentId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.startDate = new Date();
+        this.departmentId = departmentId;
+    }
+
     public Integer getEmployeeId() {
         return employeeId;
     }
