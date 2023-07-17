@@ -1,14 +1,15 @@
 package uz.tashkent.epam.cources.dao;
 
+import uz.tashkent.epam.cources.dto.EmployeeDTO;
 import uz.tashkent.epam.cources.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeDao {
 
-    List<Employee> getAllEmployees();
+    List<EmployeeDTO> getAllEmployees();
 
-    List<Employee> getAllEmployeesByDepartmentId(Integer departmentId);
+    List<EmployeeDTO> getAllEmployeesByDepartmentId(Integer departmentId);
 
     Employee addEmployee(String firstName, String lastName, String email, Integer departmentId);
 

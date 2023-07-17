@@ -1,14 +1,12 @@
-package uz.tashkent.epam.cources.model;
+package uz.tashkent.epam.cources.dto;
+
+import uz.tashkent.epam.cources.model.Employee;
 
 import java.util.Date;
 
-public class Employee {
+public class EmployeeDTO {
 
     private Integer employeeId;
-
-    private String firstName;
-
-    private String lastName;
 
     private String email;
 
@@ -16,16 +14,10 @@ public class Employee {
 
     private Integer departmentId;
 
-    public Employee() {
+    private String fullName;
 
-    }
+    public EmployeeDTO() {
 
-    public Employee(String firstName, String lastName, String email, Integer departmentId) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.startDate = new Date();
-        this.departmentId = departmentId;
     }
 
     public Integer getEmployeeId() {
@@ -34,22 +26,6 @@ public class Employee {
 
     public void setEmployeeId(Integer employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -74,5 +50,13 @@ public class Employee {
 
     public void setDepartmentId(Integer departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
